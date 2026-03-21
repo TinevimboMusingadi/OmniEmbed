@@ -23,6 +23,18 @@ Understanding and unifying these representations is at the frontier of multimoda
 
 ---
 
+## 🛠️ How We Extract OmniEmbeddings
+Rather than utilizing standard output text logits (which collapse meaning into human language constraints), we intercept the neural network states dynamically as they travel.
+
+1. **Instantiating the Multi-modal Engine**: We initialize the massive 30-Billion parameter LM (`Qwen/Qwen3-Omni-30B-A3B-Instruct`), dynamically dropping it into a 4-bit (NF4) quantized precision format to cleanly run on consumer GPUs and cloud environments (like Google Colab's 16GB T4 instances).
+2. **PyTorch Context Managers**: We wrap the transformer inference pass inside our generic `HiddenStateExtractor` tool. 
+3. **Deep-Layer Hook Interception**: Instead of modifying the model's core codebase, we register an invasive PyTorch hook (`register_forward_hook`) directly into the deepest Transformer Blocks (`model.layers[-1]`). 
+4. **Sequence Mean-Pooling**: As data (Sounds, Videos, Text) flows through the LM backbone, our hook freezes the raw internal dimensional trajectory tensor (`[batch, seq_len, 4096]`). We calculate a dense representation array by collapsing the sequential tokens using Mean-Sequence Pooling—specifically excluding PAD tokens. 
+
+The resulting outputs are unified **4096-Dimensional dense structural embeddings**.
+
+---
+
 ## 🧪 Core Research Hypotheses
 1. **Semantic Unification:** Hidden states at the final transformer layers of Qwen3-Omni form a semantically coherent cross-modal space where concepts cluster together regardless of input modality.
 2. **Modality Gap Correction:** Raw extracted geometric clusters exhibit systematic inter-modality offsets (the "Modality Gap"). This gap can be corrected mathematically—without backpropagation—using zero-mean standardization and ZCA Whitening decorrelation.
@@ -62,7 +74,6 @@ graph LR;
 
     LLM --> |PyTorch Hooks interception| Z
 ```
-Rather than utilizing output logits, our `HiddenStateExtractor` framework intercepts computation tensors iterating through the deepest transformer blocks, as they contain the clearest, most highly-abstract "modality-agnostic" representations of the input.
 
 ---
 
@@ -77,14 +88,9 @@ This repository acts as the clean bridge connecting research to practical Softwa
 ### Clean Repository Layout
 ```text
 omniembed/
-├── omniembed/                   # Core Python library module
-│   ├── extractor.py             # Hidden state interception logic
-│   ├── alignment.py             # Normalization and ZCA whitening logic
-│   ├── compression.py           # Dimensionality reduction (PCA/Matryoshka)
-│   ├── retrieval.py             # Recall validation matrices
-│   └── viz.py                   # Seaborn/UMAP projections 
+├── omniembed/                   # Core Python library module (See inner README)
 ├── scripts/                     # Operational generic CLI pipeline layers
-├── notebooks/                   # Hands-on visualization execution checkpoints
+├── notebooks/                   # Hands-on visualization execution checkpoints (See inner README)
 └── tests/                       # Complete PyTest suite coverage
 ```
 
@@ -108,11 +114,7 @@ pip install -e .
 ### Free-Tier Cloud Integration (Google Colab)
 Running heavily scaled 30-Billion parameter multimodal variants natively demands extreme hardware limits. We mapped all end-to-end extraction setups to interactive Jupyter Notebooks uniquely tuned with smart boundary checks that handle Google Colab instances automatically.
 
-Interact with the pipeline logic through the `notebooks/` directory:
-1. `00_model_exploration.ipynb`: Setup and hardware footprint analysis limits.
-2. `01_baseline_extraction.ipynb`: Harvesting and generating representation structures dynamically.
-3. `02_modality_gap_analysis.ipynb`: Visualizing distribution drifts and executing structural gap alignment closures. 
-4. `03_compression_tradeoffs.ipynb`: Optimizing database density dimensions.
+Interact with the pipeline logic through the `notebooks/` directory.
 
 ---
 
