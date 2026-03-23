@@ -85,12 +85,27 @@ This repository acts as the clean bridge connecting research to practical Softwa
 * **Evaluation Frameworks:** Built-in modular calculation matrices tracking internal $L_2$ drift boundaries alongside Standard `Recall@K` validations.
 * **Quantization Reliability:** Logic handles offloading internal processing state over to `bitsandbytes` **4-bit (NF4)** quantizations transparently. This gracefully handles compute-bound environments natively.
 
+* **`01_omni_pipeline_core.ipynb`**: Complete linear pipeline from extraction to semantic alignment and compression.
+* **`02_interactive_omni_search.ipynb`**: Interactive multi-modal dashboard with audio/image rendering and 4-modality universal search.
+
+---
+
+## 💻 Tech Stack & Engineering Methodologies
+This repository acts as the clean bridge connecting research to practical Software Engineering modularity.
+
+* **Non-invasive PyTorch Hooks:** Intercept state representations dynamically using context managers, preserving the model state safely.
+* **Dimensionality Gap Tuning:** Implement strict Mathematical manipulations including `Z-Score scaling`, `Mean-Centering`, and complete covariance SVD mappings to reach `ZCA Whitening`.
+* **Evaluation Frameworks:** Built-in modular calculation matrices tracking internal $L_2$ drift boundaries alongside Standard `Recall@K` validations.
+* **Quantization Reliability:** Logic handles offloading internal processing state over to `bitsandbytes` **4-bit (NF4)** quantizations transparently. This gracefully handles compute-bound environments natively.
+* **Local CPU Execution:** Includes `scripts/run_local_cpu.py` for strictly RAM-constrained (16GB) environments using aggressive disk offloading.
+
 ### Clean Repository Layout
 ```text
 omniembed/
-├── omniembed/                   # Core Python library module (See inner README)
+├── omniembed/                   # Core Python library module
 ├── scripts/                     # Operational generic CLI pipeline layers
-├── notebooks/                   # Hands-on visualization execution checkpoints (See inner README)
+│   └── run_local_cpu.py         # 16GB RAM CPU optimization script
+├── notebooks/                   # Hands-on consolidated pipelines
 └── tests/                       # Complete PyTest suite coverage
 ```
 
