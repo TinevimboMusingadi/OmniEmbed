@@ -1,0 +1,14 @@
+{
+    "raw_pipeline": {
+        "Recall@1": 0.08,
+        "Recall@5": 0.22,
+        "Mean Cosine Similarity": 0.1284,
+        "L2 Modality Gap": 4.52
+    },
+    "aligned_pipeline": {
+        "Recall@1": 0.38,
+        "Recall@5": 0.61,
+        "Mean Cosine Similarity": 0.5362,
+        "L2 Modality Gap": 0.12
+    }
+}
